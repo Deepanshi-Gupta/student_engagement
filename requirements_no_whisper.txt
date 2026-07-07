@@ -1,0 +1,26 @@
+﻿# Engagement Monitor â€” full project dependencies
+# Install with: pip install -r requirements.txt
+
+# --- Vision (Week 2, 5) ---
+opencv-python==4.10.0.84
+mediapipe==0.10.14
+
+# --- Speech (Week 3, 4) ---
+sounddevice==0.4.7
+soundfile==0.12.1
+librosa==0.10.2
+
+# --- Models / ML (Week 2-6) ---
+torch==2.3.1
+torchaudio==2.3.1
+transformers==4.44.2
+
+# --- Fusion / data (Week 6) ---
+numpy==1.26.4
+pandas==2.2.2
+matplotlib==3.9.0
+
+# --- AI integration (Week 7) ---
+google-generativeai==0.7.2
+python-dotenv==1.0.1
+

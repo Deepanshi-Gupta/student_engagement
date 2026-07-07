@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Engagement Monitor — Live Dashboard</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#171b22; --panel2:#1f242d; --line:#2a313c;
+    --txt:#e6e9ee; --mut:#8b95a3; --green:#1D9E75; --amber:#EF9F27; --red:#E24B4A;
+    --blue:#378ADD; --purple:#7F77DD;
+    --radius:14px; --sans:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);
+       padding:20px;line-height:1.5;}
+  a{color:inherit;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;
+          flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+  .title{font-size:18px;font-weight:600;}
+  .title small{display:block;font-size:12px;color:var(--mut);font-weight:400;}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;}
+  .pill{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--panel2);
+        color:var(--mut);border:0.5px solid var(--line);white-space:nowrap;}
+  .pill b{color:var(--txt);font-weight:600;}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;
+       vertical-align:middle;background:var(--mut);}
+  .ok{background:var(--green);} .warn{background:var(--amber);} .bad{background:var(--red);}
+  .off{background:#4a525e;}
+
+  .banner{border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;
+          font-size:13px;display:none;}
+  .banner.show{display:block;}
+  .banner.distress{background:rgba(226,75,74,.15);border:0.5px solid var(--red);color:#ffb4b4;}
+  .banner.err{background:rgba(239,159,39,.12);border:0.5px solid var(--amber);color:#ffd79a;}
+
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start;}
+  @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+  .panel{background:var(--panel);border:0.5px solid var(--line);
+         border-radius:var(--radius);padding:18px;}
+  .panel h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--mut);font-weight:600;margin-bottom:14px;}
+
+  /* gauge */
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;}
+  .gauge{position:relative;width:200px;height:200px;}
+  .gauge svg{transform:rotate(-90deg);}
+  .gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;
+              align-items:center;justify-content:center;}
+  .gauge .val{font-size:46px;font-weight:700;line-height:1;}
+  .gauge .lbl{font-size:11px;color:var(--mut);margin-top:4px;text-transform:uppercase;
+              letter-spacing:.06em;}
+  .state-tag{margin-top:14px;font-size:13px;font-weight:600;padding:6px 16px;
+             border-radius:20px;background:var(--panel2);}
+
+  /* signal list */
+  .sig{display:flex;align-items:center;justify-content:space-between;
+       padding:10px 0;border-top:0.5px solid var(--line);}
+  .sig:first-child{border-top:0;}
+  .sig .name{font-size:13px;color:var(--mut);}
+  .sig .val{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+  .sig .conf{font-size:11px;color:var(--mut);font-weight:400;}
+
+  .rightcol{display:grid;gap:16px;}
+  .media{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:680px){.media{grid-template-columns:1fr;}}
+  #videoBox{width:100%;border-radius:10px;background:#000;aspect-ratio:4/3;
+            object-fit:cover;border:0.5px solid var(--line);}
+  .nocam{display:flex;align-items:center;justify-content:center;text-align:center;
+         aspect-ratio:4/3;border-radius:10px;background:var(--panel2);
+         color:var(--mut);font-size:13px;border:0.5px dashed var(--line);padding:20px;}
+  #chart{width:100%;height:200px;display:block;}
+  .transcript-log{max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+  .tline{font-size:13px;color:var(--txt);display:flex;gap:10px;align-items:baseline;}
+  .tline .tt{font-size:10px;color:var(--mut);font-variant-numeric:tabular-nums;
+             flex-shrink:0;min-width:42px;}
+  .tline .tx{font-style:italic;}
+  .tline.empty{color:var(--mut);font-style:normal;}
+  .tline.cur .tx{color:#fff;font-weight:600;}
+
+  .obs-card{background:var(--panel2);border-radius:10px;padding:16px 18px;
+            border-left:3px solid var(--green);}
+  .obs-card .body{font-size:14px;line-height:1.6;}
+  .obs-card .body.empty{color:var(--mut);}
+  .ts{font-size:10px;color:var(--mut);margin-top:8px;}
+  .muted{color:var(--mut);font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="title">Real-Time Multimodal Engagement Monitor
+  </div>
+  <div class="pills">
+    <span class="pill" id="modePill">mode: —</span>
+    <span class="pill" id="uptimePill">uptime: —</span>
+    <span class="pill"><span class="dot off" id="camDot"></span>camera</span>
+    <span class="pill"><span class="dot off" id="micDot"></span>mic</span>
+  </div>
+</div>
+
+<div class="banner distress" id="distressBanner"></div>
+<div class="banner err" id="errBanner"></div>
+
+<div class="grid">
+  <!-- LEFT: score + signals -->
+  <div class="panel">
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="86" fill="none" stroke="#2a313c" stroke-width="16"/>
+          <circle id="ring" cx="100" cy="100" r="86" fill="none" stroke="#1D9E75"
+                  stroke-width="16" stroke-linecap="round"
+                  stroke-dasharray="540" stroke-dashoffset="540"/>
+        </svg>
+        <div class="num"><div class="val" id="scoreVal">—</div>
+          <div class="lbl">engagement</div></div>
+      </div>
+      <div class="state-tag" id="stateTag">waiting…</div>
+    </div>
+
+    <h2 style="margin-top:22px;">Live signals</h2>
+    <div class="sig"><span class="name">Head pose</span>
+      <span class="val"><span class="dot off" id="d_head"></span><span id="v_head">—</span></span></div>
+    <div class="sig"><span class="name">Eye state</span>
+      <span class="val"><span class="dot off" id="d_eye"></span><span id="v_eye">—</span></span></div>
+    <div class="sig"><span class="name">Facial emotion</span>
+      <span class="val"><span class="dot off" id="d_face"></span><span id="v_face">—</span>
+        <span class="conf" id="c_face"></span></span></div>
+    <div class="sig"><span class="name">Speech emotion</span>
+      <span class="val"><span class="dot off" id="d_speech"></span><span id="v_speech">—</span>
+        <span class="conf" id="c_speech"></span></span></div>
+    <div class="sig"><span class="name">Confusion</span>
+      <span class="val"><span class="dot off" id="d_conf"></span><span id="v_conf">—</span></span></div>
+  </div>
+
+  <!-- RIGHT: video + chart + transcript + alerts -->
+  <div class="rightcol">
+    <div class="media">
+      <div class="panel">
+        <h2>Camera feed</h2>
+        <img id="videoBox" alt="camera feed" style="display:none;" />
+        <div class="nocam" id="noCam">Camera feed appears here in live mode.</div>
+      </div>
+      <div class="panel">
+        <h2>Engagement over time</h2>
+        <canvas id="chart"></canvas>
+        <div class="muted" style="margin-top:8px;">last ~2 minutes · 0–100</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Speech-to-text — heard from student (Whisper)</h2>
+      <div class="transcript-log" id="transcriptLog">
+        <div class="tline empty">— no speech captured yet —</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Observations (NVIDIA model)</h2>
+      <div class="obs-card"><div class="body" id="obsText">—</div>
+        <div class="ts" id="obsTs"></div></div>
+      <div class="muted" id="obsNote"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RING_CIRC = 2 * Math.PI * 86;           // 540.35
+const $ = id => document.getElementById(id);
+
+function colorFor(score){
+  if(score == null) return "#8b95a3";
+  if(score >= 70) return "#1D9E75";
+  if(score >= 40) return "#EF9F27";
+  return "#E24B4A";
+}
+function setDot(id, cls){ $(id).className = "dot " + cls; }
+
+// classify a label into a status color
+function headCls(l){ return l==="ATTENTIVE"?"ok":l==="DISTRACTED"?"warn":l==="AWAY"?"bad":"off"; }
+function eyeCls(l){ return l==="ALERT"?"ok":l==="DROWSY"?"warn":"off"; }
+const POS = ["happy","neutral","surprise","calm"];
+const NEG = ["sad","fear","angry","disgust"];
+function emoCls(l){ if(!l) return "off"; l=l.toLowerCase();
+  return POS.includes(l)?"ok":NEG.includes(l)?"bad":"warn"; }
+
+const history = [];   // {t, score}
+
+function drawChart(){
+  const c = $("chart"), ctx = c.getContext("2d");
+  const w = c.width = c.clientWidth, h = c.height = c.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  // gridlines at 0/50/100
+  ctx.strokeStyle = "#2a313c"; ctx.lineWidth = 1; ctx.font = "10px system-ui";
+  ctx.fillStyle = "#8b95a3";
+  [0,50,100].forEach(v=>{
+    const y = h - (v/100)*(h-10) - 5;
+    ctx.beginPath(); ctx.moveTo(28,y); ctx.lineTo(w,y); ctx.stroke();
+    ctx.fillText(v, 6, y+3);
+  });
+  if(history.length < 2) return;
+  const t0 = history[0].t, t1 = history[history.length-1].t || t0+1;
+  const span = Math.max(1, t1 - t0);
+  const X = t => 28 + ((t - t0)/span)*(w-32);
+  const Y = s => h - (s/100)*(h-10) - 5;
+  ctx.beginPath();
+  history.forEach((p,i)=>{ const x=X(p.t), y=Y(p.score); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+  ctx.strokeStyle = colorFor(history[history.length-1].score);
+  ctx.lineWidth = 2; ctx.stroke();
+}
+
+async function tick(){
+  let st;
+  try { st = await (await fetch("/api/state")).json(); }
+  catch(e){ $("errBanner").textContent = "Cannot reach server…"; $("errBanner").classList.add("show"); return; }
+
+  // top bar
+  $("modePill").innerHTML = "mode: <b>"+st.mode+"</b>";
+  const m = Math.floor(st.uptime_seconds/60), s = Math.floor(st.uptime_seconds%60);
+  $("uptimePill").innerHTML = "uptime: <b>"+m+"m "+String(s).padStart(2,"0")+"s</b>";
+  setDot("camDot", st.camera_ok===true?"ok":st.camera_ok===false?"bad":"off");
+  setDot("micDot", st.mic_ok===true?"ok":st.mic_ok===false?"bad":"off");
+
+  // gauge
+  const score = st.fusion.engagement_score;
+  $("scoreVal").textContent = score==null ? "—" : Math.round(score);
+  const col = colorFor(score);
+  $("ring").setAttribute("stroke", col);
+  $("ring").setAttribute("stroke-dashoffset", RING_CIRC*(1-(score||0)/100));
+  $("scoreVal").style.color = col;
+  let tag = score==null?"waiting…":score>=70?"Engaged":score>=40?"Drifting":"Disengaged";
+  $("stateTag").textContent = tag; $("stateTag").style.color = col;
+
+  // distress banner
+  const db = $("distressBanner");
+  if(st.fusion.distress_flag){ db.textContent = "⚠ Distress signals detected — sustained across the recent window."; db.classList.add("show"); }
+  else db.classList.remove("show");
+
+  // signals
+  const g = st.signals;
+  $("v_head").textContent = g.head_label || "—"; setDot("d_head", headCls(g.head_label));
+  $("v_eye").textContent  = g.eye_label  || "—"; setDot("d_eye", eyeCls(g.eye_label));
+  $("v_face").textContent = g.facial_emotion || "—"; setDot("d_face", emoCls(g.facial_emotion));
+  $("c_face").textContent = g.facial_emotion ? Math.round(g.facial_conf*100)+"%" : "";
+  $("v_speech").textContent = g.speech_emotion || "—"; setDot("d_speech", emoCls(g.speech_emotion));
+  $("c_speech").textContent = g.speech_emotion ? Math.round(g.speech_conf*100)+"%" : "";
+  $("v_conf").textContent = g.confusion==null?"—":g.confusion?"detected":"clear";
+  setDot("d_conf", g.confusion==null?"off":g.confusion?"bad":"ok");
+
+  // speech-to-text rolling log
+  const log = st.transcript_log || [];
+  const box = $("transcriptLog");
+  if(!log.length){
+    box.innerHTML = '<div class="tline empty">— no speech captured yet —</div>';
+  } else {
+    box.innerHTML = log.map((p,i)=>{
+      const mm = Math.floor(p.t/60), ss = String(Math.floor(p.t%60)).padStart(2,"0");
+      const cur = i===log.length-1 ? " cur" : "";
+      const safe = p.text.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      return `<div class="tline${cur}"><span class="tt">${mm}:${ss}</span><span class="tx">“${safe}”</span></div>`;
+    }).join("");
+    box.scrollTop = box.scrollHeight;   // auto-scroll to newest
+  }
+
+  // chart (server already sends a trimmed history)
+  history.length = 0; (st.history||[]).forEach(p=>history.push(p)); drawChart();
+
+  // video vs placeholder
+  const vid = $("videoBox"), noc = $("noCam");
+  if(st.camera_ok === true){
+    if(vid.style.display==="none"){ vid.src = "/video?ts="+Date.now(); }
+    vid.style.display="block"; noc.style.display="none";
+  } else {
+    vid.style.display="none"; noc.style.display="flex";
+    noc.textContent = st.mode==="sim" ? "Simulation mode — synthetic signals, no camera."
+                                      : "Camera not available.";
+  }
+
+  // observation (NVIDIA model)
+  const obs = st.observation || {};
+  const ot = $("obsText");
+  ot.textContent = obs.text || "Waiting for the first observation…";
+  ot.classList.toggle("empty", !obs.text);
+  $("obsTs").textContent = obs.at!=null ? "generated at "+Math.round(obs.at)+"s into session" : "";
+  const eb = $("errBanner");
+  if(obs.error){ eb.textContent = obs.error; eb.classList.add("show"); }
+  else eb.classList.remove("show");
+  $("obsNote").textContent = obs.text ? "" : "A fresh observation is generated from all signals every 30s.";
+}
+
+setInterval(tick, 1000);
+tick();
+window.addEventListener("resize", drawChart);
+</script>
+</body>
+</html>

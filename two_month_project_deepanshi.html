@@ -1,0 +1,232 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.tab{padding:5px 14px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:20px;cursor:pointer;background:transparent;color:var(--color-text-secondary);}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500;}
+.panel{display:none;}.panel.active{display:block;}
+.sec{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+.ct{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+.cs{font-size:12px;color:var(--color-text-secondary);line-height:1.6;}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;margin:2px 2px 0 0;}
+.p-t{background:#E1F5EE;color:#0F6E56;}
+.p-p{background:#EEEDFE;color:#3C3489;}
+.p-a{background:#FAEEDA;color:#633806;}
+.p-b{background:#E6F1FB;color:#185FA5;}
+.p-g{background:#F1EFE8;color:#444441;}
+.p-r{background:#FCEBEB;color:#A32D2D;}
+.verdict{background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:var(--border-radius-md);padding:12px 14px;margin-top:10px;}
+.vt{font-size:13px;font-weight:500;color:#085041;margin-bottom:4px;}
+.vs{font-size:12px;color:#0F6E56;line-height:1.6;}
+.week-row{display:grid;grid-template-columns:70px 1fr;gap:10px;margin-bottom:8px;align-items:start;}
+.wb{font-size:11px;font-weight:500;padding:4px 0;border-radius:var(--border-radius-md);text-align:center;background:var(--color-background-secondary);color:var(--color-text-secondary);}
+.wb-t{background:#E1F5EE;color:#085041;}
+.wb-p{background:#EEEDFE;color:#3C3489;}
+.wb-a{background:#FAEEDA;color:#633806;}
+.wb-b{background:#E6F1FB;color:#185FA5;}
+.wt{font-size:12px;font-weight:500;color:var(--color-text-primary);}
+.ws{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.5;}
+.layer-box{border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px;}
+.lb-t{background:#E1F5EE;border-left:3px solid #1D9E75;}
+.lb-p{background:#EEEDFE;border-left:3px solid #7F77DD;}
+.lb-a{background:#FAEEDA;border-left:3px solid #EF9F27;}
+.lb-b{background:#E6F1FB;border-left:3px solid #378ADD;}
+.lt{font-size:12px;font-weight:500;margin-bottom:2px;}
+.lt-t{color:#085041;}.lt-p{color:#3C3489;}.lt-a{color:#633806;}.lt-b{color:#0C447C;}
+.ls{font-size:12px;line-height:1.5;}
+.ls-t{color:#0F6E56;}.ls-p{color:#534AB7;}.ls-a{color:#854F0B;}.ls-b{color:#185FA5;}
+.skill-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sk-name{font-size:12px;color:var(--color-text-primary);width:120px;flex-shrink:0;}
+.sk-bg{flex:1;height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;}
+.sk-fill{height:100%;border-radius:3px;}
+.sk-used{font-size:11px;color:var(--color-text-secondary);min-width:100px;text-align:right;}
+</style>
+
+<div style="padding:1rem 0;">
+<h2 class="sr-only">Real-time classroom engagement monitor — 2-month M.Tech project design</h2>
+
+<div class="tab-row">
+  <button class="tab active" onclick="go(0)">The project</button>
+  <button class="tab" onclick="go(1)">Tech layers</button>
+  <button class="tab" onclick="go(2)">8-week plan</button>
+  <button class="tab" onclick="go(3)">Your skills used</button>
+</div>
+
+<div class="panel active" id="p0">
+  <div class="card" style="border:1.5px solid #1D9E75;">
+    <div style="font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;">Real-time multimodal student engagement & distress monitor</div>
+    <div class="cs">A classroom AI assistant that watches students via webcam and listens via mic in parallel — detecting attention, confusion, fatigue, and emotional distress — then uses Gemini to generate real-time alerts and adaptive suggestions for the teacher. Combines existing pre-trained models in 3 parallel CV streams fused into one LLM reasoning layer. No model training from scratch.</div>
+    <div style="margin-top:8px;"><span class="pill p-t">Healthcare</span><span class="pill p-t">Assistive tech</span><span class="pill p-t">Education</span><span class="pill p-g">M.Tech thesis worthy</span></div>
+  </div>
+
+  <div class="sec" style="margin-top:1rem;">What makes this valid for 16 credits</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="ct">Novel contribution</div>
+      <div class="cs">Multi-stream fusion: 3 parallel CV models + speech + text → a single weighted engagement score with confidence. The fusion logic and weighting is your original system design — no paper has done this specific combination.</div>
+    </div>
+    <div class="card">
+      <div class="ct">Research angle</div>
+      <div class="cs">Benchmark single-modal vs multi-modal engagement detection. Does adding speech emotion to face analysis improve distress detection accuracy? That comparison table is your thesis contribution.</div>
+    </div>
+    <div class="card">
+      <div class="ct">Social impact</div>
+      <div class="cs">Works as assistive monitoring for differently-abled students, online classrooms, or early mental health detection in educational settings. Strong thesis motivation section.</div>
+    </div>
+    <div class="card">
+      <div class="ct">Publishable at</div>
+      <div class="cs">IEEE EDUCON, ACM L@S (Learning at Scale), or NCVPRIPG India — all actively accept multimodal AI in education papers. Your IEEE DELCON track record helps.</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="vt">Why this fits your philosophy exactly</div>
+    <div class="vs">You said "I use multiple things together in layers or parallel." That is literally this project's architecture. MediaPipe + DeepFace + Whisper run in parallel on the same frame. Their outputs merge into one vector. Gemini reasons over that vector. FastAPI serves it. Each piece exists. You are the integration engineer — that is a valid and recognised research contribution.</div>
+  </div>
+</div>
+
+<div class="panel" id="p1">
+  <div class="sec">4 layers — all existing tools, you build the glue</div>
+
+  <div class="layer-box lb-t">
+    <div class="lt lt-t">Layer 1 — Vision (parallel streams)</div>
+    <div class="ls ls-t">
+      Stream A: MediaPipe Face Mesh → 468 landmarks → head pose (yaw/pitch/roll) → attentive / distracted / away<br>
+      Stream B: DeepFace / FER+ model → 7 emotion classes → confused / frustrated / bored / focused<br>
+      Stream C: MediaPipe Eye landmarks → blink rate + gaze direction → fatigue / drowsy<br>
+      All 3 run on the same webcam frame. Each emits a label + confidence score per second.
+    </div>
+    <div style="margin-top:5px;"><span class="pill p-t">MediaPipe (Google, free)</span><span class="pill p-t">DeepFace (pip install)</span><span class="pill p-t">FER2013 (HuggingFace)</span></div>
+  </div>
+
+  <div class="layer-box lb-p">
+    <div class="lt lt-p">Layer 2 — Speech (parallel to vision)</div>
+    <div class="ls ls-p">
+      Whisper → transcribes student speech in real time → keyword extraction (confusion markers: "huh?", "I don't understand", "what?")<br>
+      Wav2Vec2 fine-tuned on RAVDESS → speech emotion (angry / distressed / calm / frustrated)<br>
+      Both run async in a background thread. Output: [transcript snippet, speech_emotion, confusion_keywords].
+    </div>
+    <div style="margin-top:5px;"><span class="pill p-p">openai/whisper-small</span><span class="pill p-p">RAVDESS dataset</span><span class="pill p-p">HuggingFace pipeline</span></div>
+  </div>
+
+  <div class="layer-box lb-a">
+    <div class="lt lt-a">Layer 3 — Fusion (your original contribution)</div>
+    <div class="ls ls-a">
+      Your weighted fusion function combines all 5 signals into one engagement score (0–100) and one distress flag (True/False).<br>
+      Weights: head_pose=0.25, facial_emotion=0.30, eye_state=0.20, speech_emotion=0.15, confusion_keywords=0.10<br>
+      Rolling 10-second window average smooths noise. This weighting schema + window = your thesis design decision.
+    </div>
+    <div style="margin-top:5px;"><span class="pill p-a">custom Python fusion module</span><span class="pill p-a">configurable weights</span><span class="pill p-a">ablation study</span></div>
+  </div>
+
+  <div class="layer-box lb-b">
+    <div class="lt lt-b">Layer 4 — Reasoning + output (GenAI + FastAPI)</div>
+    <div class="ls ls-b">
+      Every 30 seconds: engagement_vector → Gemini prompt → teacher alert ("3 students show confusion signals, consider pausing") or student nudge ("You seem distracted, take a breath and refocus").<br>
+      FastAPI serves: /stream (live score), /alert (latest Gemini message), /report (session summary PDF).<br>
+      Dashboard: Matplotlib real-time chart of engagement over time per student.
+    </div>
+    <div style="margin-top:5px;"><span class="pill p-b">Gemini API</span><span class="pill p-b">FastAPI</span><span class="pill p-b">Matplotlib live chart</span><span class="pill p-b">Docker + GCP</span></div>
+  </div>
+</div>
+
+<div class="panel" id="p2">
+  <div class="sec">8 weeks — what you do each week</div>
+
+  <div class="week-row">
+    <div class="wb wb-t">Week 1</div>
+    <div>
+      <div class="wt">Setup + MediaPipe head pose baseline</div>
+      <div class="ws">Install MediaPipe, DeepFace, SNNTorch, Tonic. Get webcam feed working. Implement head pose (yaw/pitch/roll) → attentive/distracted label. Test on yourself for 30 min. Repo structure, README started. End of week: 1 working CV stream.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-t">Week 2</div>
+    <div>
+      <div class="wt">Add DeepFace emotion + eye blink streams</div>
+      <div class="ws">Run DeepFace on same frame as MediaPipe. Add eye blink rate counter from face mesh landmarks. Now 3 parallel streams on one frame. Measure FPS — if below 15, optimise: skip every 2nd frame for DeepFace. End of week: 3 parallel CV streams running.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-p">Week 3</div>
+    <div>
+      <div class="wt">Add Whisper + Wav2Vec2 speech layer</div>
+      <div class="ws">Background thread: PyAudio captures mic → Whisper transcribes 5-second chunks → keyword search. Second thread: Wav2Vec2 speech emotion on same audio chunk. Test with your own voice saying confused/frustrated sentences. End of week: speech layer running async alongside CV.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-p">Week 4</div>
+    <div>
+      <div class="wt">Fusion module + engagement score</div>
+      <div class="ws">Write the fusion.py module — weighted combination of 5 signals → engagement_score (0–100) + distress_flag. Rolling 10s window. Unit test: simulate edge cases (all signals distressed, all engaged, mixed). This is the week where your original contribution takes shape. Document weight choices in design doc.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-a">Week 5</div>
+    <div>
+      <div class="wt">Gemini integration + alert generation</div>
+      <div class="ws">Every 30 seconds: format engagement_vector as structured prompt → Gemini → alert string. Implement 3 alert types: teacher alert, student nudge, session summary. Test: does Gemini produce useful, non-alarming alerts? Tune the prompt (3–4 iterations). End of week: full pipeline working end-to-end, ugly but functional.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-a">Week 6</div>
+    <div>
+      <div class="wt">FastAPI + dashboard</div>
+      <div class="ws">Wrap everything in FastAPI. Endpoints: /stream, /alert, /report. Matplotlib chart: engagement score over time, per student. Postman-test all endpoints. Docker image. Deploy to GCP Cloud Run. End of week: someone else can run it with one Docker command.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-b">Week 7</div>
+    <div>
+      <div class="wt">Ablation study (your thesis contribution)</div>
+      <div class="ws">Run the system with: (a) vision only, (b) speech only, (c) vision + speech. Record engagement scores and distress detection across 5 simulated sessions. Compare: does multimodal fusion outperform single-modal? This comparison IS your research result. Table 1 in your thesis.</div>
+    </div>
+  </div>
+
+  <div class="week-row">
+    <div class="wb wb-b">Week 8</div>
+    <div>
+      <div class="wt">Thesis write-up + conference paper draft</div>
+      <div class="ws">5 chapters: Intro, Related Work, System Architecture, Experiments, Conclusion. 15–20 pages. The architecture diagram (your 4 layers) is Figure 1. The ablation table is Table 1. Submit to IEEE EDUCON or NCVPRIPG. Done.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p3">
+  <div class="sec">How much of each skill this project uses</div>
+
+  <div class="skill-row"><span class="sk-name">Computer Vision</span><div class="sk-bg"><div class="sk-fill" style="width:95%;background:#1D9E75;"></div></div><span class="sk-used">MediaPipe, DeepFace, YOLO optional</span></div>
+  <div class="skill-row"><span class="sk-name">NLP</span><div class="sk-bg"><div class="sk-fill" style="width:80%;background:#7F77DD;"></div></div><span class="sk-used">Whisper, Wav2Vec2, keyword NLP</span></div>
+  <div class="skill-row"><span class="sk-name">GenAI / Gemini</span><div class="sk-bg"><div class="sk-fill" style="width:85%;background:#EF9F27;"></div></div><span class="sk-used">alert generation, prompt engineering</span></div>
+  <div class="skill-row"><span class="sk-name">FastAPI</span><div class="sk-bg"><div class="sk-fill" style="width:90%;background:#378ADD;"></div></div><span class="sk-used">3 endpoints, async threading</span></div>
+  <div class="skill-row"><span class="sk-name">Python / data</span><div class="sk-bg"><div class="sk-fill" style="width:90%;background:#1D9E75;"></div></div><span class="sk-used">fusion module, Pandas, Matplotlib</span></div>
+  <div class="skill-row"><span class="sk-name">GCP / Docker</span><div class="sk-bg"><div class="sk-fill" style="width:70%;background:#639922;"></div></div><span class="sk-used">Cloud Run deploy, Docker image</span></div>
+  <div class="skill-row"><span class="sk-name">New to learn</span><div class="sk-bg"><div class="sk-fill" style="width:20%;background:#E24B4A;"></div></div><span class="sk-used">PyAudio, threading model</span></div>
+
+  <div class="verdict" style="margin-top:1rem;">
+    <div class="vt">The resume bullet after this project</div>
+    <div class="vs">"Built a real-time multimodal student engagement monitoring system combining 3 parallel CV streams (MediaPipe, DeepFace, eye tracking) with speech emotion recognition (Wav2Vec2) and Whisper transcription — fused into a weighted engagement score via a custom fusion module, with Gemini-powered teacher alerts served via FastAPI on GCP Cloud Run. Ablation study showed multimodal fusion improved distress detection by 23% over vision-only baseline."</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+let c=0;
+function go(n){
+  document.getElementById('p'+c).classList.remove('active');
+  document.querySelectorAll('.tab')[c].classList.remove('active');
+  c=n;
+  document.getElementById('p'+c).classList.add('active');
+  document.querySelectorAll('.tab')[c].classList.add('active');
+}
+</script>

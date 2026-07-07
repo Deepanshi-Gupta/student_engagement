@@ -1,0 +1,149 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+body{color:var(--color-text-primary);}
+.section{margin-bottom:2rem;}
+.section-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:0.6rem;}
+.section-body{font-size:14px;line-height:1.8;color:var(--color-text-primary);}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1.5rem 0;}
+.highlight{background:var(--color-background-secondary);border-left:3px solid #1D9E75;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:12px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--color-text-primary);}
+.use-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:0.75rem;}
+.use-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem 1rem;}
+.use-icon{font-size:18px;margin-bottom:6px;}
+.use-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;}
+.use-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.5;}
+.impact-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:0.75rem;}
+.impact-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+.ic-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;}
+.ic-sub{font-size:12px;color:var(--color-text-secondary);line-height:1.5;}
+.title-block{margin-bottom:1.75rem;}
+.project-title{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.4;margin-bottom:6px;}
+.project-tagline{font-size:13px;color:var(--color-text-secondary);line-height:1.5;}
+.pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin:2px 2px 0 0;}
+.p-t{background:#E1F5EE;color:#0F6E56;}
+.p-p{background:#EEEDFE;color:#3C3489;}
+.p-b{background:#E6F1FB;color:#185FA5;}
+.p-a{background:#FAEEDA;color:#633806;}
+.em{font-style:italic;color:var(--color-text-secondary);}
+</style>
+
+<div style="padding:1.25rem 0;">
+<h2 class="sr-only">Project abstract — real-time multimodal student engagement and distress monitor</h2>
+
+<div class="title-block">
+  <div class="project-title">Real-Time Multimodal Student Engagement & Distress Monitor</div>
+  <div class="project-tagline">An AI-powered classroom intelligence system that sees, listens, and understands — so no student is silently left behind.</div>
+  <div style="margin-top:8px;">
+    <span class="pill p-t">Education</span>
+    <span class="pill p-t">Healthcare</span>
+    <span class="pill p-t">Assistive Tech</span>
+    <span class="pill p-p">Computer Vision</span>
+    <span class="pill p-p">NLP</span>
+    <span class="pill p-b">GenAI</span>
+    <span class="pill p-a">Multimodal Fusion</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">What</div>
+  <div class="section-body">
+    This system is a real-time, multimodal AI pipeline that continuously monitors a student's engagement, cognitive state, and emotional wellbeing during a learning session — using nothing more than a standard webcam and microphone. Three computer vision streams run in parallel on every captured frame: facial landmark analysis tracks head pose and attention direction, an emotion recognition model reads facial expressions for confusion, frustration, or fatigue, and an eye-tracking layer measures blink rate and gaze focus. Simultaneously, a speech processing layer transcribes spoken words through Whisper and classifies the emotional tone of the student's voice. All five signal streams feed into a custom-designed fusion module that produces a single, smooth engagement score and a distress flag every second. When patterns of disengagement or distress are detected, a generative AI layer synthesises context-aware alerts for the teacher and gentle nudges for the student — in natural language, not raw numbers.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Why</div>
+  <div class="section-body">
+    In a classroom of thirty students, a teacher cannot watch every face simultaneously. A student who is confused rarely raises their hand. A student experiencing anxiety rarely speaks up. By the time disengagement becomes visible — through poor performance or dropout — it is often too late for a timely intervention. Existing solutions either require expensive specialised hardware, operate offline on recorded video rather than in real time, or rely on a single signal such as facial expression alone, which is brittle and easily misread in isolation. There is no system that fuses vision, gaze, and speech into one coherent, explainable signal and delivers it to the teacher as an actionable natural-language insight — in the moment, not in a report the following week. This project addresses that gap directly.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">How</div>
+  <div class="section-body">
+    The architecture follows a layered, parallel design philosophy — assembling powerful pre-trained components rather than training models from scratch. MediaPipe Holistic extracts 468 facial landmarks per frame to compute head pose angles. DeepFace provides emotion classification across seven categories. Eye landmark coordinates yield a blink rate and gaze direction index. OpenAI Whisper transcribes microphone audio in rolling five-second windows, while a Wav2Vec2 model fine-tuned on the RAVDESS speech emotion corpus classifies vocal tone. A custom Python fusion module applies a weighted combination of all five signals over a ten-second smoothing window, producing an engagement score from zero to one hundred and a boolean distress flag. Every thirty seconds, this structured state vector is passed to the Gemini API with a carefully engineered prompt, generating a concise teacher alert or student nudge in plain language. The entire pipeline is served through a FastAPI backend with live streaming, alert, and session report endpoints, containerised with Docker, and deployed to GCP Cloud Run.
+  </div>
+  <div class="highlight">
+    The original research contribution is the fusion module — its signal weighting schema, smoothing window, and the ablation study comparing single-modal baselines against the full multimodal system. This comparison quantifies, for the first time in this specific configuration, how much each modality contributes to accurate distress detection.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Practical uses</div>
+  <div class="use-grid">
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-school" style="font-size:18px;color:#1D9E75;"></i></div>
+      <div class="use-title">Physical classrooms</div>
+      <div class="use-sub">Teacher dashboard shows live engagement heatmap per student. Alerts surface the moment a group loses focus — before the lesson falls apart.</div>
+    </div>
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-video" style="font-size:18px;color:#7F77DD;"></i></div>
+      <div class="use-title">Online learning (EdTech)</div>
+      <div class="use-sub">Integrates into Zoom, Google Meet, or a custom LMS. Detects when a remote learner has mentally checked out — not just closed the camera.</div>
+    </div>
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-accessible" style="font-size:18px;color:#EF9F27;"></i></div>
+      <div class="use-title">Special needs education</div>
+      <div class="use-sub">For students with autism, ADHD, or anxiety who cannot self-report distress, the system acts as a non-verbal communicator between student and teacher.</div>
+    </div>
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-heart-rate-monitor" style="font-size:18px;color:#E24B4A;"></i></div>
+      <div class="use-title">Mental health early detection</div>
+      <div class="use-sub">Consistent distress flags across sessions — not a single incident — surface students at risk of burnout or anxiety disorder before a crisis occurs.</div>
+    </div>
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-building" style="font-size:18px;color:#185FA5;"></i></div>
+      <div class="use-title">Corporate training</div>
+      <div class="use-sub">Enterprise L&D teams can measure real engagement during mandatory compliance training — replacing self-reported satisfaction surveys with objective signal.</div>
+    </div>
+    <div class="use-card">
+      <div class="use-icon" aria-hidden="true"><i class="ti ti-stethoscope" style="font-size:18px;color:#0F6E56;"></i></div>
+      <div class="use-title">Cognitive rehabilitation</div>
+      <div class="use-sub">In clinical therapy sessions, the system monitors patient attention and emotional state, giving therapists an objective second opinion on session effectiveness.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Future impact</div>
+  <div class="impact-row">
+    <div class="impact-card">
+      <div class="ic-title">Personalised AI tutors</div>
+      <div class="ic-sub">The engagement signal becomes the feedback loop for an adaptive AI tutor — slow down when confusion is detected, accelerate when engagement is high, change teaching modality when fatigue sets in.</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-title">Neuromorphic edge deployment</div>
+      <div class="ic-sub">As event cameras and neuromorphic chips mature, the CV streams can migrate from a GPU to a sub-milliwatt edge chip — making this deployable on a cheap classroom tablet in rural India with no cloud dependency.</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-title">Longitudinal mental health data</div>
+      <div class="ic-sub">Aggregated anonymised engagement patterns across a semester become a dataset for population-level research into student wellbeing, learning curve shapes, and early dropout prediction.</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-title">Teacher professional development</div>
+      <div class="ic-sub">Session replay with engagement overlays lets teachers see exactly which moments of a lesson lost the class — turning engagement data into a personal coaching tool, not just a monitoring one.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">The one sentence that captures it</div>
+  <div class="highlight" style="border-left-color:#7F77DD;font-size:14px;font-style:italic;line-height:1.9;">
+    Where a teacher sees thirty faces, this system reads thirty minds — translating the invisible signals of confusion, fatigue, and distress into words a teacher can act on, in the moment it still matters.
+  </div>
+</div>
+
+</div>

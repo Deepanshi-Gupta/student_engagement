@@ -1,0 +1,80 @@
+https://build.nvidia.com/nvidia/nemotron-3-ultra-550b-a55b
+
+Based on the page you are viewing, **this is the Nemotron-3-Ultra-550B-A55B model by NVIDIA**, hosted on the NVIDIA NIM (NVIDIA Inference Microservice) platform.
+
+It is a massive, cutting-edge hybrid **Mamba-Transformer Mixture of Experts (MoE)** large language model with a 1-million-token context window. It is specifically designed for complex, agentic reasoning, long-document processing, coding, and multi-step planning tasks.
+
+---
+
+## Where Can You Use It?
+
+You have a few different deployment paths depending on your project's scale:
+
+1. **NVIDIA's Cloud Prototype (Free):** Right on the webpage, you can generate a free API key to test and prototype your applications directly using NVIDIA's hosted infrastructure.
+2. **Partner Endpoints (Serverless API):** If you want to scale without managing hardware, you can use serverless API integrations from providers like:
+* **Bitdeer AI**
+* **Deep Infra**
+* **Digital Ocean**
+* **GMI Cloud**
+* **Together AI**
+
+
+3. **Self-Hosted Deployments:** For enterprise needs, strict data privacy, or local production setups, you can download the model and deploy it on your own NVIDIA GPU infrastructure using NVIDIA NIM.
+
+---
+
+## How Can You Use It?
+
+Because the hosted endpoint is OpenAI-compliant, you can easily integrate it into your projects using standard LLM libraries. Here is exactly how to set it up:
+
+### 1. Python Integration
+
+You can use the standard `openai` SDK to call the model. Ensure you have your API key set up as an environment variable (`$NVIDIA_API_KEY`).
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://integrate.api.nvidia.com/v1",
+    api_key="$NVIDIA_API_KEY"
+)
+
+completion = client.chat.completions.create(
+    model="nvidia/nemotron-3-ultra-550b-a55b",
+    messages=[
+        {"role": "user", "content": "Your prompt goes here"}
+    ],
+    temperature=1,
+    top_p=0.95,
+    max_tokens=16384,
+    extra_body={
+        "chat_template_kwargs": {"enable_thinking": True},
+        "reasoning_budget": 16384
+    },
+    stream=True
+)
+
+for chunk in completion:
+    if not chunk.choices:
+        continue
+    
+    # Extract deep reasoning tokens if available
+    reasoning = getattr(chunk.choices[0].delta, "reasoning_content", None)
+    if reasoning:
+        print(reasoning, end="")
+        
+    # Extract final text output
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="")
+
+```
+
+### 2. Frameworks & Environments
+
+If python scripts aren't your primary workflow, the webpage provides quick-start templates for other common interfaces:
+
+* **LangChain:** For building complex, multi-step agent workflows or RAG (Retrieval-Augmented Generation) applications.
+* **Node.js:** For integrating backend JavaScript/TypeScript services.
+* **Shell (cURL):** For quick terminal testing or raw HTTP requests.
+
+To get started right away, you can click the **"Generate API Key"** button on the page, grab the snippet for your preferred language, and drop it into your local environment.
