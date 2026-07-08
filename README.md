@@ -1,6 +1,6 @@
 # Real-Time Multimodal Student Engagement & Distress Monitor
 
-9-week M.Tech build. Each week adds one piece; nothing is trained from
+ Each week adds one piece; nothing is trained from
 scratch — everything is a pre-trained model wired together by a fusion
 module that **is** the original research contribution.
 
